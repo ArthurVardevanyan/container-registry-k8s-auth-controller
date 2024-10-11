@@ -25,17 +25,28 @@ import (
 
 // AuthSpec defines the desired state of Auth
 type AuthSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+	// The Kubernetes Service Account That is Bound to for Identity Federation
+	// +kubebuilder:validation:Required
+	ServiceAccount string `json:"serviceAccount"`
+	// +kubebuilder:validation:Enum=quay;
+	// +kubebuilder:default:=quay
+	ContainerRegistry string `json:"containerRegistry"`
+	// Validations?
+	Quay Quay `json:"quay"`
+}
 
-	// Foo is an example field of Auth. Edit auth_types.go to remove/update
-	Foo string `json:"foo,omitempty"`
+type Quay struct {
+	// The Kubernetes Service Account That is Bound to for Identity Federation
+	// +kubebuilder:validation:Required
+	RobotAccount string `json:"robotAccount"`
 }
 
 // AuthStatus defines the observed state of Auth
 type AuthStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+	// When the Current Token Expires
+	TokenExpiration string `json:"tokenExpiration,omitempty"`
+	// Output of Any Errors
+	Error string `json:"error,omitempty"`
 }
 
 // +kubebuilder:object:root=true

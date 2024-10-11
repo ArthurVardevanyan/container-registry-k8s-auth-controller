@@ -36,6 +36,7 @@
     "ceph",
     "clientset",
     "clusterrolebinding",
+    "containerregistry",
     "controllerutil",
     "corev",
     "deepcopy",
