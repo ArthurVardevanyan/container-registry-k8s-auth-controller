@@ -2,6 +2,11 @@
 IMG ?= controller:latest
 # ENVTEST_K8S_VERSION refers to the version of kubebuilder assets to be downloaded by envtest binary.
 ENVTEST_K8S_VERSION = 1.31.0
+export KO_DOCKER_REPO=registry.arthurvardevanyan.com/homelab/container-registry-k8s-auth-controller
+# https://catalog.redhat.com/software/containers/ubi9/ubi-micro/615bdf943f6014fa45ae1b58?architecture=amd64&image=662a8edd22c80ead7411ec6c&container-tabs=overview
+export KO_DEFAULTBASEIMAGE=registry.access.redhat.com/ubi9-micro:9.4-6
+TAG ?= $(shell date --utc '+%Y%m%d-%H%M')
+EXPIRE ?= 1d
 
 # Get the currently used golang install path (in GOPATH/bin, unless GOBIN is set)
 ifeq (,$(shell go env GOBIN))
@@ -28,7 +33,7 @@ all: build
 
 # The help target prints out all targets with their descriptions organized
 # beneath their categories. The categories are represented by '##@' and the
-# target descriptions by '##'. The awk command is responsible for reading the
+# target descriptions by '##'. The awk commands is responsible for reading the
 # entire set of makefiles included in this invocation, looking for lines of the
 # file as xyz: ## something, and then pretty-format the target and help. Then,
 # if there's a line with ##@ something, that gets pretty-printed as a category.
@@ -61,8 +66,11 @@ vet: ## Run go vet against code.
 
 .PHONY: test
 test: manifests generate fmt vet envtest ## Run tests.
-	KUBEBUILDER_ASSETS="$(shell $(ENVTEST) use $(ENVTEST_K8S_VERSION) --bin-dir $(LOCALBIN) -p path)" go test $$(go list ./... | grep -v /e2e) -coverprofile cover.out
+	KUBEBUILDER_ASSETS="$(shell $(ENVTEST) use $(ENVTEST_K8S_VERSION) --bin-dir $(LOCALBIN) -p path)" go test ./... -coverprofile cover.out
 
+.PHONY: test-pipeline
+test-pipeline: manifests generate fmt vet envtest ## Run tests.
+	KUBEBUILDER_ASSETS="$(shell $(ENVTEST) use $(ENVTEST_K8S_VERSION) --bin-dir $(LOCALBIN) -p path)" go test ./... -coverprofile cover.out > test.out; cat test.out
 # Utilize Kind or modify the e2e tests to load the image locally, enabling compatibility with other vendors.
 .PHONY: test-e2e  # Run the e2e tests against a Kind k8s instance that is spun up.
 test-e2e:
