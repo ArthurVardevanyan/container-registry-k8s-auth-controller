@@ -55,6 +55,9 @@ spec:
                   required:
                     - robotAccount
                   type: object
+                secretName:
+                  description: Name of the Secret to Save the Image Pull Secret Too
+                  type: string
                 serviceAccount:
                   description:
                     The Kubernetes Service Account That is Bound to for Identity
@@ -63,6 +66,7 @@ spec:
               required:
                 - containerRegistry
                 - quay
+                - secretName
                 - serviceAccount
               type: object
             status:

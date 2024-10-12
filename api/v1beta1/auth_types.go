@@ -25,6 +25,8 @@ import (
 
 // AuthSpec defines the desired state of Auth
 type AuthSpec struct {
+	// Name of the Secret to Save the Image Pull Secret Too
+	SecretName string `json:"secretName"`
 	// The Kubernetes Service Account That is Bound to for Identity Federation
 	// +kubebuilder:validation:Required
 	ServiceAccount string `json:"serviceAccount"`

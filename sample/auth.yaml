@@ -1,0 +1,11 @@
+apiVersion: containerregistry.arthurvardevanyan.com/v1beta1
+kind: Auth
+metadata:
+  name: default
+  namespace: default
+spec:
+  serviceAccount: default
+  secretName: default
+  containerRegistry: quay
+  quay:
+    robotAccount: "arthurvardevanyan+push"
