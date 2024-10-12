@@ -150,6 +150,7 @@ func (r *AuthReconciler) Reconcile(reconcilerContext context.Context, req ctrl.R
 			containerRegistryAuth.Spec.GoogleArtifactRegistry.GooglePoolName,
 			containerRegistryAuth.Spec.GoogleArtifactRegistry.GoogleProviderName,
 			containerRegistryAuth.Spec.GoogleArtifactRegistry.Type,
+			containerRegistryAuth.Spec.Audience,
 		)
 		wifTokenSource, err := wifConfig.GetGcpWifTokenWithTokenSource(reconcilerContext)
 		if err != nil {

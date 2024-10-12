@@ -13,9 +13,10 @@ import (
 
 	"golang.org/x/oauth2"
 	auth "golang.org/x/oauth2/google"
-	authenticationV1 "k8s.io/api/authentication/v1"
 
 	"sigs.k8s.io/controller-runtime/pkg/client"
+
+	"github.com/ArthurVardevanyan/container-registry-k8s-auth-controller/pkg/kubernetes"
 )
 
 type Wif struct {
@@ -30,6 +31,7 @@ type Wif struct {
 	Audience                       string
 	ServiceAccountImpersonationUrl string
 	ConfigType                     string
+	TokenAudience                  string
 }
 
 func New(
@@ -43,6 +45,7 @@ func New(
 	googlePoolName string,
 	googleProviderName string,
 	configType string,
+	tokenAudience string,
 ) Wif {
 	return Wif{
 		Client:                         client,
@@ -53,6 +56,7 @@ func New(
 		ConfigType:                     configType,
 		Audience:                       "//iam.googleapis.com/projects/" + googlePoolProject + "/locations/global/workloadIdentityPools/" + googlePoolName + "/providers/" + googleProviderName,
 		ServiceAccountImpersonationUrl: "https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/" + googleServiceAccount + ":generateAccessToken",
+		TokenAudience:                  tokenAudience,
 		TokenExpirationSeconds:         3600,
 		TokenDirectory:                 "/tmp/tokens/",
 		RemoveTokenFile:                true,
@@ -71,19 +75,6 @@ type WifConfigJson struct {
 			Type string `json:"type"`
 		} `json:"format"`
 	} `json:"credential_source"`
-}
-
-func kubernetesAuthToken(expirationSeconds int) *authenticationV1.TokenRequest {
-	ExpirationSeconds := int64(expirationSeconds)
-
-	tokenRequest := &authenticationV1.TokenRequest{
-		Spec: authenticationV1.TokenRequestSpec{
-			Audiences:         []string{"openshift"},
-			ExpirationSeconds: &ExpirationSeconds,
-		},
-	}
-
-	return tokenRequest
 }
 
 func gcpAccessToken(ctx context.Context, wifConfig []byte) (*oauth2.Token, error) {
@@ -160,17 +151,8 @@ func (r *Wif) GetWifConfig(ctx context.Context) ([]byte, error) {
 	}
 
 	// Generate k8s Auth Token
-	var serviceAccount coreV1.ServiceAccount
-	k8sAuthToken := kubernetesAuthToken(r.TokenExpirationSeconds)
-	err := r.Get(ctx, client.ObjectKey{Name: r.ServiceAccount, Namespace: r.Namespace}, &serviceAccount)
-	if err != nil {
-
-		return nil, fmt.Errorf("service Account '%s' Not Found. Error: %v", r.ServiceAccount, err)
-	}
-	err = r.SubResource("token").Create(ctx, &serviceAccount, k8sAuthToken)
-	if err != nil {
-		return nil, fmt.Errorf("unable to create kubernetes token. Error: %v", err)
-	}
+	kubernetesAuth := kubernetes.New(r.Client)
+	kubernetesToken, err := kubernetesAuth.GetKubernetesAuthToken(ctx, r.ServiceAccount, r.Namespace, r.TokenExpirationSeconds, r.TokenAudience)
 
 	// Save Token to FileSystem
 
@@ -181,7 +163,7 @@ func (r *Wif) GetWifConfig(ctx context.Context) ([]byte, error) {
 			return nil, fmt.Errorf("unable to create token directory '%s'. Error: %v", r.TokenDirectory, err)
 		}
 	}
-	d1 := []byte(k8sAuthToken.Status.Token)
+	d1 := []byte(kubernetesToken.Status.Token)
 	err = os.WriteFile(tokenPath, d1, 0644) // Can this be done without using the filesystem?
 	if err != nil {
 		return nil, fmt.Errorf("unable to write token file '%s'. Error: %v", tokenPath, err)
