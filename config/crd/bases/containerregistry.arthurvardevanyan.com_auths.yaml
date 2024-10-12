@@ -39,6 +39,9 @@ spec:
             spec:
               description: AuthSpec defines the desired state of Auth
               properties:
+                audience:
+                  description: The Audience to use with the JWT Token
+                  type: string
                 containerRegistry:
                   default: quay
                   enum:
@@ -152,6 +155,7 @@ spec:
                     Federation
                   type: string
               required:
+                - audience
                 - containerRegistry
                 - secretName
                 - serviceAccount
