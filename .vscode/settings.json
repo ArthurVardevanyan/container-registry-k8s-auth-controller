@@ -47,6 +47,7 @@
     "finalizers",
     "gomod",
     "googleapis",
+    "gserviceaccount",
     "homelab",
     "kubebuilder",
     "kubeconfig",
