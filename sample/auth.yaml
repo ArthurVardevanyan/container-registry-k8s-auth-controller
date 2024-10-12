@@ -15,6 +15,20 @@ spec:
 apiVersion: containerregistry.arthurvardevanyan.com/v1beta1
 kind: Auth
 metadata:
+  name: quay
+  namespace: homelab
+spec:
+  serviceAccount: pipeline
+  secretName: quay
+  containerRegistry: quay
+  audience: openshift
+  quay:
+    robotAccount: "arthurvardevanyan+push"
+    url: quay.io
+---
+apiVersion: containerregistry.arthurvardevanyan.com/v1beta1
+kind: Auth
+metadata:
   name: example
   namespace: smoke-tests
 spec:
