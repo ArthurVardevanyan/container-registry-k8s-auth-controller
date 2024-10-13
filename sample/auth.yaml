@@ -15,11 +15,25 @@ spec:
 apiVersion: containerregistry.arthurvardevanyan.com/v1beta1
 kind: Auth
 metadata:
+  name: quay
+  namespace: homelab
+spec:
+  serviceAccount: pipeline
+  secretName: quay
+  containerRegistry: quay
+  audience: openshift
+  quay:
+    robotAccount: "arthurvardevanyan+push"
+    url: quay.io
+---
+apiVersion: containerregistry.arthurvardevanyan.com/v1beta1
+kind: Auth
+metadata:
   name: example
   namespace: smoke-tests
 spec:
   containerRegistry: googleArtifactRegistry
-  secretName: artifact-registry-auth
+  secretName: container-registry-auth
   serviceAccount: wif-test
   audience: openshift
   googleArtifactRegistry:
@@ -36,7 +50,7 @@ metadata:
   namespace: smoke-tests
 spec:
   containerRegistry: googleArtifactRegistry
-  secretName: artifact-registry-auth-inline
+  secretName: container-registry-auth-inline
   serviceAccount: wif-test
   audience: openshift
   googleArtifactRegistry:

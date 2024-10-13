@@ -57,28 +57,31 @@ type GoogleArtifactRegistry struct {
 	// Object Type, must be configMap or inline
 	// +kubebuilder:validation:Enum=configMap;inline
 	// +kubebuilder:validation:Required
-	Type string `json:"type"`
+	// +kubebuilder:default:=inline
+	Type string `json:"type,omitempty"`
 	// Location of GCP Artifact Registry Being Used.
 	// +kubebuilder:validation:Enum=us;asia;europe;northamerica-northeast1;northamerica-northeast2;us-central1;us-east1;us-east4;us-east5;us-south1;us-west1;us-west2;us-west3;us-west4;southamerica-east1;southamerica-west1;europe-central2;europe-north1;europe-southwest1;europe-west1;europe-west2;europe-west3;europe-west4;europe-west6;europe-west8;europe-west9;europe-west12;me-central1;me-west1;asia-east1;asia-east2;asia-northeast1;asia-northeast2;asia-northeast3;asia-south1;asia-south2;asia-southeast1;asia-southeast2;australia-southeast1;australia-southeast2;
-	RegistryLocation string `json:"registryLocation"`
+	// +kubebuilder:validation:Required
+	// +kubebuilder:default:=us
+	RegistryLocation string `json:"registryLocation,omitempty"`
 	// The Name of the Kubernetes Object Containing the Workload Identity Json Config
 	// +kubebuilder:validation:Optional
-	ObjectName string `json:"objectName"`
+	ObjectName string `json:"objectName,omitempty"`
 	// The Name of the File Within the Object, Generally: credentials_config.json
 	// +kubebuilder:validation:Optional
-	FileName string `json:"fileName"`
+	FileName string `json:"fileName,omitempty"`
 	// The Google Service Account That is to be Bound to a Kubernetes Service Account with Artifact Registry Reader
 	// +kubebuilder:validation:Optional
-	GoogleServiceAccount string `json:"googleServiceAccount"`
+	GoogleServiceAccount string `json:"googleServiceAccount,omitempty"`
 	// The GCP Project in which the Workload Identity Pool/Provider is Located
 	// +kubebuilder:validation:Optional
-	GooglePoolProject string `json:"googlePoolProject"`
+	GooglePoolProject string `json:"googlePoolProject,omitempty"`
 	// Name of the Workload Identity Pool
 	// +kubebuilder:validation:Optional
-	GooglePoolName string `json:"googlePoolName"`
+	GooglePoolName string `json:"googlePoolName,omitempty"`
 	// Name of the Workload Identity Pool
 	// +kubebuilder:validation:Optional
-	GoogleProviderName string `json:"googleProviderName"`
+	GoogleProviderName string `json:"googleProviderName,omitempty"`
 }
 
 // AuthStatus defines the observed state of Auth

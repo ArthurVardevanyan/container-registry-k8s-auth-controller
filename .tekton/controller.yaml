@@ -2,7 +2,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  name: controller
+  name: container-registry-controller
   annotations:
     pipelinesascode.tekton.dev/on-event: "[pull_request]"
     pipelinesascode.tekton.dev/on-target-branch: "[main]"
@@ -119,7 +119,7 @@ spec:
             - ReadWriteOnce
           resources:
             requests:
-              storage: "200Mi"
+              storage: "500Mi"
           storageClassName: rook-ceph-block
     - name: git_auth_secret
       secret:
