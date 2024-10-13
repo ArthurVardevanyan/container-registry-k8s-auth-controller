@@ -31,9 +31,9 @@ type AuthSpec struct {
 	// The Kubernetes Service Account That is Bound to for Identity Federation
 	// +kubebuilder:validation:Required
 	ServiceAccount string `json:"serviceAccount"`
-	// The Audience to use with the JWT Token
+	// The Audiences to use with the JWT Token
 	// +kubebuilder:validation:Required
-	Audience string `json:"audience"`
+	Audiences []string `json:"audiences"`
 	// +kubebuilder:validation:Enum=quay;googleArtifactRegistry
 	// +kubebuilder:default:=quay
 	// +kubebuilder:validation:Required

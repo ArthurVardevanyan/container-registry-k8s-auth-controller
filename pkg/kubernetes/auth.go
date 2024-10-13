@@ -14,31 +14,23 @@ type Auth struct {
 	Namespace               string
 	FederatedServiceAccount string
 	TokenExpirationSeconds  int
-	Audience                string
+	Audiences               string
 }
 
 func New(
 	client client.Client,
-	// namespace string,
-	// federatedServiceAccount string,
-	// tokenExpirationSeconds int,
-	// audience string,
 ) Auth {
 	return Auth{
 		Client: client,
-		// Namespace:               namespace,
-		// FederatedServiceAccount: federatedServiceAccount,
-		// TokenExpirationSeconds:  tokenExpirationSeconds,
-		// Audience:                audience,
 	}
 }
 
-func authToken(expirationSeconds int, audience string) *authenticationV1.TokenRequest {
+func authToken(expirationSeconds int, audiences []string) *authenticationV1.TokenRequest {
 	ExpirationSeconds := int64(expirationSeconds)
 
 	tokenRequest := &authenticationV1.TokenRequest{
 		Spec: authenticationV1.TokenRequestSpec{
-			Audiences:         []string{audience},
+			Audiences:         audiences,
 			ExpirationSeconds: &ExpirationSeconds,
 		},
 	}
@@ -46,11 +38,11 @@ func authToken(expirationSeconds int, audience string) *authenticationV1.TokenRe
 	return tokenRequest
 }
 
-func (r *Auth) GetKubernetesAuthToken(ctx context.Context, federatedServiceAccount string, namespace string, tokenExpirationSeconds int, audience string) (*authenticationV1.TokenRequest, error) {
+func (r *Auth) GetKubernetesAuthToken(ctx context.Context, federatedServiceAccount string, namespace string, tokenExpirationSeconds int, audiences []string) (*authenticationV1.TokenRequest, error) {
 
 	// Generate k8s Auth Token
 	var serviceAccount coreV1.ServiceAccount
-	k8sAuthToken := authToken(tokenExpirationSeconds, audience)
+	k8sAuthToken := authToken(tokenExpirationSeconds, audiences)
 	err := r.Get(ctx, client.ObjectKey{Name: federatedServiceAccount, Namespace: namespace}, &serviceAccount)
 	if err != nil {
 
