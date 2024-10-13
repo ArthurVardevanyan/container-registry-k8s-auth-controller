@@ -119,6 +119,12 @@ func (r *AuthReconciler) Reconcile(reconcilerContext context.Context, req ctrl.R
 			return updateContainerRegistryObject(r, reconcilerContext, containerRegistryAuth, 0)
 		}
 		quayToken, err := quay.GetQuayRobotToken(kubernetesToken.Status.Token, containerRegistryAuth.Spec.Quay.RobotAccount, containerRegistryAuth.Spec.Quay.URL)
+		if err != nil {
+			error = "Unable to Generate Quay Token"
+			containerRegistryAuth.Status.Error = error + ": " + err.Error()
+			log.Error(err, error)
+			return updateContainerRegistryObject(r, reconcilerContext, containerRegistryAuth, 0)
+		}
 
 		quayTokenExpiration, err := jwt.TokenExpiration(quayToken)
 		if err != nil {

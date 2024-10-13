@@ -77,6 +77,7 @@ spec:
                         Workload Identity Json Config
                       type: string
                     registryLocation:
+                      default: us
                       description: Location of GCP Artifact Registry Being Used.
                       enum:
                         - us
@@ -121,6 +122,7 @@ spec:
                         - australia-southeast2
                       type: string
                     type:
+                      default: inline
                       description: Object Type, must be configMap or inline
                       enum:
                         - configMap

@@ -75,11 +75,11 @@ test-pipeline: manifests generate fmt vet envtest ## Run tests.
 
 .PHONY: ko-build
 ko-build: test ## Build docker image with the manager.
-	ko build --platform=linux/amd64 --bare --sbom none --image-label quay.expires-after="${EXPIRE}" --tags "${TAG}"
+	ko build --platform=linux/amd64 --bare --sbom none --image-label quay.expires-after="${EXPIRE}" --tags "${TAG}" cmd/main.go
 
 .PHONY: ko-build-pipeline
 ko-build-pipeline: test-pipeline ## Build docker image with the manager.
-	ko build --platform=linux/amd64 --bare --sbom none --image-label quay.expires-after="${EXPIRE}" --tags "${TAG}"
+	ko build --platform=linux/amd64 --bare --sbom none --image-label quay.expires-after="${EXPIRE}" --tags "${TAG}" cmd/main.go
 
 .PHONY: test-e2e  # Run the e2e tests against a Kind k8s instance that is spun up.
 test-e2e:
