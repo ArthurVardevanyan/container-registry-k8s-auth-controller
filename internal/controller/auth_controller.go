@@ -111,7 +111,7 @@ func (r *AuthReconciler) Reconcile(reconcilerContext context.Context, req ctrl.R
 
 		kubernetesAuth := kubernetes.New(r.Client)
 
-		kubernetesToken, err := kubernetesAuth.GetKubernetesAuthToken(reconcilerContext, containerRegistryAuth.Spec.ServiceAccount, req.NamespacedName.Namespace, tokenExpirationSeconds, containerRegistryAuth.Spec.Audience)
+		kubernetesToken, err := kubernetesAuth.GetKubernetesAuthToken(reconcilerContext, containerRegistryAuth.Spec.ServiceAccount, req.NamespacedName.Namespace, tokenExpirationSeconds, containerRegistryAuth.Spec.Audiences)
 		if err != nil {
 			error = "Unable to Generate Kubernetes Token"
 			containerRegistryAuth.Status.Error = err.Error()
@@ -156,7 +156,7 @@ func (r *AuthReconciler) Reconcile(reconcilerContext context.Context, req ctrl.R
 			containerRegistryAuth.Spec.GoogleArtifactRegistry.GooglePoolName,
 			containerRegistryAuth.Spec.GoogleArtifactRegistry.GoogleProviderName,
 			containerRegistryAuth.Spec.GoogleArtifactRegistry.Type,
-			containerRegistryAuth.Spec.Audience,
+			containerRegistryAuth.Spec.Audiences,
 		)
 		wifTokenSource, err := wifConfig.GetGcpWifTokenWithTokenSource(reconcilerContext)
 		if err != nil {

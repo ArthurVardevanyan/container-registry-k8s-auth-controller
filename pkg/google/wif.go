@@ -31,7 +31,7 @@ type Wif struct {
 	Audience                       string
 	ServiceAccountImpersonationUrl string
 	ConfigType                     string
-	TokenAudience                  string
+	TokenAudiences                 []string
 }
 
 func New(
@@ -45,7 +45,7 @@ func New(
 	googlePoolName string,
 	googleProviderName string,
 	configType string,
-	tokenAudience string,
+	tokenAudiences []string,
 ) Wif {
 	return Wif{
 		Client:                         client,
@@ -56,7 +56,7 @@ func New(
 		ConfigType:                     configType,
 		Audience:                       "//iam.googleapis.com/projects/" + googlePoolProject + "/locations/global/workloadIdentityPools/" + googlePoolName + "/providers/" + googleProviderName,
 		ServiceAccountImpersonationUrl: "https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/" + googleServiceAccount + ":generateAccessToken",
-		TokenAudience:                  tokenAudience,
+		TokenAudiences:                 tokenAudiences,
 		TokenExpirationSeconds:         3600,
 		TokenDirectory:                 "/tmp/tokens/",
 		RemoveTokenFile:                true,
@@ -152,7 +152,7 @@ func (r *Wif) GetWifConfig(ctx context.Context) ([]byte, error) {
 
 	// Generate k8s Auth Token
 	kubernetesAuth := kubernetes.New(r.Client)
-	kubernetesToken, err := kubernetesAuth.GetKubernetesAuthToken(ctx, r.ServiceAccount, r.Namespace, r.TokenExpirationSeconds, r.TokenAudience)
+	kubernetesToken, err := kubernetesAuth.GetKubernetesAuthToken(ctx, r.ServiceAccount, r.Namespace, r.TokenExpirationSeconds, r.TokenAudiences)
 
 	// Save Token to FileSystem
 

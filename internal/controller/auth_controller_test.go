@@ -45,8 +45,9 @@ var _ = Describe("Container Registry", func() {
 		timeout  = time.Second * 10
 		duration = time.Second * 10
 		interval = time.Millisecond * 250
-		Audience = "openshift"
 	)
+
+	var Audiences = []string{"openshift"}
 
 	var ObjectName = getEnv("OBJECT_NAME", "test")
 	var ObjectNamespace = getEnv("OBJECT_NAMESPACE", "smoke-tests")
@@ -79,7 +80,7 @@ var _ = Describe("Container Registry", func() {
 				Spec: containerregistryv1beta1.AuthSpec{
 					SecretName:        SecretName,
 					ServiceAccount:    ServiceAccount,
-					Audience:          Audience,
+					Audiences:         Audiences,
 					ContainerRegistry: "quay",
 					Quay: containerregistryv1beta1.Quay{
 						RobotAccount: RobotAccount,
@@ -135,7 +136,7 @@ var _ = Describe("Container Registry", func() {
 				Spec: containerregistryv1beta1.AuthSpec{
 					SecretName:        SecretName,
 					ServiceAccount:    "dne",
-					Audience:          Audience,
+					Audiences:         Audiences,
 					ContainerRegistry: "quay",
 					Quay: containerregistryv1beta1.Quay{
 						RobotAccount: RobotAccount,
@@ -190,7 +191,7 @@ var _ = Describe("Container Registry", func() {
 				Spec: containerregistryv1beta1.AuthSpec{
 					SecretName:        SecretName,
 					ServiceAccount:    "pipeline",
-					Audience:          Audience,
+					Audiences:         Audiences,
 					ContainerRegistry: "quay",
 					Quay: containerregistryv1beta1.Quay{
 						RobotAccount: RobotAccount,
@@ -248,7 +249,7 @@ var _ = Describe("Container Registry", func() {
 				Spec: containerregistryv1beta1.AuthSpec{
 					SecretName:        SecretName,
 					ServiceAccount:    ServiceAccount,
-					Audience:          Audience,
+					Audiences:         Audiences,
 					ContainerRegistry: "googleArtifactRegistry",
 					GoogleArtifactRegistry: containerregistryv1beta1.GoogleArtifactRegistry{
 						RegistryLocation: RegistryLocation,
@@ -306,7 +307,7 @@ var _ = Describe("Container Registry", func() {
 				Spec: containerregistryv1beta1.AuthSpec{
 					SecretName:        SecretName,
 					ServiceAccount:    ServiceAccount,
-					Audience:          Audience,
+					Audiences:         Audiences,
 					ContainerRegistry: "googleArtifactRegistry",
 					GoogleArtifactRegistry: containerregistryv1beta1.GoogleArtifactRegistry{
 						RegistryLocation: RegistryLocation,
@@ -357,7 +358,7 @@ var _ = Describe("Container Registry", func() {
 				Spec: containerregistryv1beta1.AuthSpec{
 					SecretName:        SecretName,
 					ServiceAccount:    ServiceAccount,
-					Audience:          Audience,
+					Audiences:         Audiences,
 					ContainerRegistry: "googleArtifactRegistry",
 					GoogleArtifactRegistry: containerregistryv1beta1.GoogleArtifactRegistry{
 						RegistryLocation:     RegistryLocation,
@@ -417,7 +418,7 @@ var _ = Describe("Container Registry", func() {
 				Spec: containerregistryv1beta1.AuthSpec{
 					SecretName:        SecretName,
 					ServiceAccount:    ServiceAccount,
-					Audience:          Audience,
+					Audiences:         Audiences,
 					ContainerRegistry: "googleArtifactRegistry",
 					GoogleArtifactRegistry: containerregistryv1beta1.GoogleArtifactRegistry{
 						RegistryLocation: RegistryLocation,
@@ -468,7 +469,7 @@ var _ = Describe("Container Registry", func() {
 				Spec: containerregistryv1beta1.AuthSpec{
 					SecretName:        SecretName,
 					ServiceAccount:    ServiceAccount,
-					Audience:          Audience,
+					Audiences:         Audiences,
 					ContainerRegistry: "googleArtifactRegistry",
 					GoogleArtifactRegistry: containerregistryv1beta1.GoogleArtifactRegistry{
 						RegistryLocation:     RegistryLocation,
@@ -528,7 +529,7 @@ var _ = Describe("Container Registry", func() {
 				Spec: containerregistryv1beta1.AuthSpec{
 					SecretName:        SecretName,
 					ServiceAccount:    ServiceAccount,
-					Audience:          Audience,
+					Audiences:         Audiences,
 					ContainerRegistry: "googleArtifactRegistry",
 					GoogleArtifactRegistry: containerregistryv1beta1.GoogleArtifactRegistry{
 						RegistryLocation: RegistryLocation,
