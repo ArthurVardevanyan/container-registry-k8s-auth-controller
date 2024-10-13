@@ -3,8 +3,8 @@ IMG ?= controller:latest
 # ENVTEST_K8S_VERSION refers to the version of kubebuilder assets to be downloaded by envtest binary.
 ENVTEST_K8S_VERSION = 1.31.0
 export KO_DOCKER_REPO=registry.arthurvardevanyan.com/homelab/container-registry-k8s-auth-controller
-# https://catalog.redhat.com/software/containers/ubi9/ubi-micro/615bdf943f6014fa45ae1b58?architecture=amd64&image=66ce292a833997cb91648803&container-tabs=overview
-export KO_DEFAULTBASEIMAGE=registry.access.redhat.com/ubi9-micro:9.4-15
+# https://catalog.redhat.com/software/containers/ubi9-minimal/61832888c0d15aff4912fe0d?image=66eb4713df6256d9be473d28
+export KO_DEFAULTBASEIMAGE=registry.access.redhat.com/ubi9-minimal:9.4-1227.1726694542
 TAG ?= $(shell date --utc '+%Y%m%d-%H%M')
 EXPIRE ?= 26w
 
