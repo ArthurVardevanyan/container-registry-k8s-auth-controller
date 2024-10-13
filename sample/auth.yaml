@@ -33,7 +33,7 @@ metadata:
   namespace: smoke-tests
 spec:
   containerRegistry: googleArtifactRegistry
-  secretName: artifact-registry-auth
+  secretName: container-registry-auth
   serviceAccount: wif-test
   audience: openshift
   googleArtifactRegistry:
@@ -50,7 +50,7 @@ metadata:
   namespace: smoke-tests
 spec:
   containerRegistry: googleArtifactRegistry
-  secretName: artifact-registry-auth-inline
+  secretName: container-registry-auth-inline
   serviceAccount: wif-test
   audience: openshift
   googleArtifactRegistry:

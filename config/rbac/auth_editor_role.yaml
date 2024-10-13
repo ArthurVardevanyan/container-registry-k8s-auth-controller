@@ -7,21 +7,21 @@ metadata:
     app.kubernetes.io/managed-by: kustomize
   name: auth-editor-role
 rules:
-- apiGroups:
-  - containerregistry.arthurvardevanyan.com
-  resources:
-  - auths
-  verbs:
-  - create
-  - delete
-  - get
-  - list
-  - patch
-  - update
-  - watch
-- apiGroups:
-  - containerregistry.arthurvardevanyan.com
-  resources:
-  - auths/status
-  verbs:
-  - get
+  - apiGroups:
+      - containerregistry.arthurvardevanyan.com
+    resources:
+      - auths
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - containerregistry.arthurvardevanyan.com
+    resources:
+      - auths/status
+    verbs:
+      - get
