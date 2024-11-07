@@ -5,6 +5,9 @@ metadata:
   labels:
     app.kubernetes.io/name: container-registry-k8s-auth-controller
     app.kubernetes.io/managed-by: kustomize
+    rbac.authorization.k8s.io/aggregate-to-edit: "true"
+    rbac.authorization.k8s.io/aggregate-to-view: "true"
+    rbac.authorization.k8s.io/aggregate-to-cluster-reader: "true"
   name: auth-viewer-role
 rules:
   - apiGroups:
