@@ -110,6 +110,8 @@ func (r *AuthReconciler) Reconcile(reconcilerContext context.Context, req ctrl.R
 	//Reset Error
 	containerRegistryAuth.Status.Error = ""
 	containerRegistryAuth.Status.TokenExpiration = ""
+	containerRegistryAuth.Status.FederationConfiguration.Issuer = ""
+	containerRegistryAuth.Status.FederationConfiguration.Subject = ""
 
 	var dockerConfig string
 
@@ -124,6 +126,25 @@ func (r *AuthReconciler) Reconcile(reconcilerContext context.Context, req ctrl.R
 			log.Error(err, error)
 			return updateContainerRegistryObject(r, reconcilerContext, containerRegistryAuth, 0)
 		}
+
+		kubernetesTokenIssuer, err := jwt.Issuer(kubernetesToken.Status.Token)
+		if err != nil {
+			error = "Unable to Generate Kubernetes Token Issuer"
+			containerRegistryAuth.Status.Error = err.Error()
+			log.Error(err, error)
+			return updateContainerRegistryObject(r, reconcilerContext, containerRegistryAuth, 0)
+		}
+		containerRegistryAuth.Status.FederationConfiguration.Issuer = kubernetesTokenIssuer
+
+		kubernetesTokenSubject, err := jwt.Subject(kubernetesToken.Status.Token)
+		if err != nil {
+			error = "Unable to Generate Kubernetes Token Subject"
+			containerRegistryAuth.Status.Error = err.Error()
+			log.Error(err, error)
+			return updateContainerRegistryObject(r, reconcilerContext, containerRegistryAuth, 0)
+		}
+		containerRegistryAuth.Status.FederationConfiguration.Subject = kubernetesTokenSubject
+
 		quayToken, err := quay.GetQuayRobotToken(kubernetesToken.Status.Token, containerRegistryAuth.Spec.Quay.RobotAccount, containerRegistryAuth.Spec.Quay.URL)
 		if err != nil {
 			error = "Unable to Generate Quay Token"
