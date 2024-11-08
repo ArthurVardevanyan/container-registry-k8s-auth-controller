@@ -88,8 +88,15 @@ type GoogleArtifactRegistry struct {
 type AuthStatus struct {
 	// When the Current Token Expires
 	TokenExpiration string `json:"tokenExpiration,omitempty"`
+	// The configs used to setup the federation settings
+	FederationConfiguration FederationConfiguration `json:"federationConfiguration,omitempty"`
 	// Output of Any Errors
 	Error string `json:"error,omitempty"`
+}
+
+type FederationConfiguration struct {
+	Issuer  string `json:"issuer,omitempty"`
+	Subject string `json:"subject,omitempty"`
 }
 
 // +kubebuilder:object:root=true

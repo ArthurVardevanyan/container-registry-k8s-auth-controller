@@ -170,6 +170,14 @@ spec:
                 error:
                   description: Output of Any Errors
                   type: string
+                federationConfiguration:
+                  description: The configs used to setup the federation settings
+                  properties:
+                    issuer:
+                      type: string
+                    subject:
+                      type: string
+                  type: object
                 tokenExpiration:
                   description: When the Current Token Expires
                   type: string
