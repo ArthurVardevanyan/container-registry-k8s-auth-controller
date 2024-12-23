@@ -4,6 +4,7 @@ kind: PipelineRun
 metadata:
   name: container-registry-controller
   annotations:
+    io.kubernetes.cri-o.TrySkipVolumeSELinuxLabel: "true" 
     pipelinesascode.tekton.dev/max-keep-runs: "1"
     pipelinesascode.tekton.dev/on-event: "[pull_request]"
     pipelinesascode.tekton.dev/on-target-branch: "[main]"
@@ -125,7 +126,13 @@ spec:
         params:
           - name: IMAGE
             value: $(tasks.test-build.results.IMAGE)
-  serviceAccountName: pipeline
+            
+  taskRunTemplate:
+    serviceAccountName: pipeline
+    podTemplate:
+      runtimeClassName: selinux
+      securityContext:
+        fsGroupChangePolicy: OnRootMismatch 
   workspaces:
     - name: data
       volumeClaimTemplate:
