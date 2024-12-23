@@ -1,10 +1,17 @@
+WORKSPACE_RESULTS_PATH ?= /tmp/image
 # Image URL to use all building/pushing image targets
 IMG ?= controller:latest
 # ENVTEST_K8S_VERSION refers to the version of kubebuilder assets to be downloaded by envtest binary.
-ENVTEST_K8S_VERSION = 1.31.0
+ENVTEST_K8S_VERSION = 1.32.0
+## Tool Versions
+KUSTOMIZE_VERSION ?= v5.5.0
+CONTROLLER_TOOLS_VERSION ?= v0.16.5
+ENVTEST_VERSION ?= release-0.19
+GOLANGCI_LINT_VERSION ?= v1.59.1
+## KO
 export KO_DOCKER_REPO=registry.arthurvardevanyan.com/homelab/container-registry-k8s-auth-controller
 # https://catalog.redhat.com/software/containers/ubi9-minimal/61832888c0d15aff4912fe0d?image=66eb4713df6256d9be473d28
-export KO_DEFAULTBASEIMAGE=registry.access.redhat.com/ubi9-minimal:9.4-1227.1726694542
+export KO_DEFAULTBASEIMAGE=registry.access.redhat.com/ubi9-minimal:9.5-1734497536@sha256:94b434a29a894129301f6ff52dbddb19422fc800a109170c634b056da8cd704f
 TAG ?= $(shell date --utc '+%Y%m%d-%H%M')
 EXPIRE ?= 26w
 
@@ -80,6 +87,7 @@ ko-build: test ## Build docker image with the manager.
 .PHONY: ko-build-pipeline
 ko-build-pipeline: test-pipeline ## Build docker image with the manager.
 	ko build --platform=linux/amd64 --bare --sbom none --image-label quay.expires-after="${EXPIRE}" --tags "${TAG}" cmd/main.go
+	echo "${KO_DOCKER_REPO}:${TAG}" > "${WORKSPACE_RESULTS_PATH}"
 
 .PHONY: test-e2e  # Run the e2e tests against a Kind k8s instance that is spun up.
 test-e2e:
@@ -174,13 +182,6 @@ CONTROLLER_GEN ?= $(LOCALBIN)/controller-gen
 ENVTEST ?= $(LOCALBIN)/setup-envtest
 GOLANGCI_LINT = $(LOCALBIN)/golangci-lint
 
-## Tool Versions
-KUSTOMIZE_VERSION ?= v5.4.3
-CONTROLLER_TOOLS_VERSION ?= v0.16.1
-ENVTEST_VERSION ?= release-0.19
-GOLANGCI_LINT_VERSION ?= v1.59.1
-
-.PHONY: kustomize
 kustomize: $(KUSTOMIZE) ## Download kustomize locally if necessary.
 $(KUSTOMIZE): $(LOCALBIN)
 	$(call go-install-tool,$(KUSTOMIZE),sigs.k8s.io/kustomize/kustomize/v5,$(KUSTOMIZE_VERSION))
