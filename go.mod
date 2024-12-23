@@ -1,6 +1,6 @@
 module github.com/ArthurVardevanyan/container-registry-k8s-auth-controller
 
-go 1.23.4
+go 1.23.4 
 
 require (
 	github.com/onsi/ginkgo/v2 v2.22.1
