@@ -1,3 +1,4 @@
+WORKSPACE_RESULTS_PATH ?= /tmp/image
 # Image URL to use all building/pushing image targets
 IMG ?= controller:latest
 # ENVTEST_K8S_VERSION refers to the version of kubebuilder assets to be downloaded by envtest binary.
@@ -80,6 +81,7 @@ ko-build: test ## Build docker image with the manager.
 .PHONY: ko-build-pipeline
 ko-build-pipeline: test-pipeline ## Build docker image with the manager.
 	ko build --platform=linux/amd64 --bare --sbom none --image-label quay.expires-after="${EXPIRE}" --tags "${TAG}" cmd/main.go
+	echo "${KO_DOCKER_REPO}:${TAG}" > "${WORKSPACE_RESULTS_PATH}"
 
 .PHONY: test-e2e  # Run the e2e tests against a Kind k8s instance that is spun up.
 test-e2e:

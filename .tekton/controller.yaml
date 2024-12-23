@@ -1,14 +1,15 @@
 ---
-apiVersion: tekton.dev/v1beta1
+apiVersion: tekton.dev/v1
 kind: PipelineRun
 metadata:
   name: container-registry-controller
   annotations:
+    pipelinesascode.tekton.dev/max-keep-runs: "1"
     pipelinesascode.tekton.dev/on-event: "[pull_request]"
     pipelinesascode.tekton.dev/on-target-branch: "[main]"
-    pipelinesascode.tekton.dev/max-keep-runs: "1"
-    pipelinesascode.tekton.dev/task: "https://raw.githubusercontent.com/ArthurVardevanyan/HomeLab/main/tekton/tasks/git-clone/0.9.1/git-clone.yaml"
     pipelinesascode.tekton.dev/target-namespace: "homelab"
+    pipelinesascode.tekton.dev/task: "https://raw.githubusercontent.com/ArthurVardevanyan/HomeLab/main/tekton/tasks/git-clone/0.9.1/git-clone.yaml"
+    pipelinesascode.tekton.dev/task-1: "https://raw.githubusercontent.com/ArthurVardevanyan/HomeLab/main/tekton/base/clair-action/clair-action-task.yaml"
 spec:
   params:
     - name: git-url
@@ -22,6 +23,11 @@ spec:
         type: string
       - name: git-commit
         type: string
+
+    results:
+      - description: The common vulnerabilities and exposures (CVE) result
+        name: SCAN_OUTPUT
+        value: $(tasks.clair-action.results.SCAN_OUTPUT)
 
     workspaces:
       - name: data
@@ -53,6 +59,8 @@ spec:
           - name: revision
             value: $(params.git-commit)
         taskSpec:
+          results:
+            - name: IMAGE
           workspaces:
             - name: output
               optional: false
@@ -89,6 +97,8 @@ spec:
                   value: $(params.revision)
                 - name: WORKSPACE_DATA_PATH
                   value: $(workspaces.output.path)
+                - name: WORKSPACE_RESULTS_PATH
+                  value: $(results.IMAGE.path)
               volumeMounts:
                 - name: cache
                   mountPath: /tmp
@@ -106,6 +116,15 @@ spec:
                   exit 1
                 fi
 
+      - name: clair-action
+        runAfter:
+          - test-build
+        taskRef:
+          name: clair-action
+          kind: Task
+        params:
+          - name: IMAGE
+            value: $(tasks.test-build.results.IMAGE)
   serviceAccountName: pipeline
   workspaces:
     - name: data
@@ -120,7 +139,7 @@ spec:
           resources:
             requests:
               storage: "500Mi"
-          storageClassName: rook-ceph-block
+          storageClassName: rook-ceph-block-ci
     - name: git_auth_secret
       secret:
         secretName: "{{ git_auth_secret }}"
